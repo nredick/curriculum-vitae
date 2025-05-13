@@ -658,6 +658,25 @@
     \vspace{\defaultvspacing}
 }
 
+% Bibliography cleanup
+\AtEveryBibitem{
+  \clearlist{address}
+  \clearfield{date}
+  \clearfield{eprint}
+%   \clearfield{isbn}
+%   \clearfield{issn}
+  \clearlist{location}
+  \clearfield{month}
+  \clearfield{series}
+  \clearfield{urldate}
+  \clearfield{urlyear}
+  \clearfield{urlmonth}
+  \clearfield{note}
+}
+
+% suppress the annoying hbox overfull warning
+\hfuzz=11in
+
 % footer
 \newcommand{\lastupdated}{
   \vfill
