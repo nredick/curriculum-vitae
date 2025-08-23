@@ -15,7 +15,7 @@
 
 %% RESUME HEADER %%
 \resumeheader[
-    alignment=c,
+    alignment=l,
     firstname=Nathalie,
     lastname=Redick,
     % location={Davis, California}
@@ -37,22 +37,24 @@
 
 \input{sections/work.tex}
 
-\input{sections/research.tex}
+%% PUBLICATIONS \& PRESENTATIONS %%
+\section{Publications \& Presentations}
+\nocite{*}
+\printbibliography[heading=none]
+
+% \input{sections/research.tex}
 
 \input{sections/service.tex}
 
 \input{sections/teaching.tex}
 
-% \input{sections/field.tex}
+\input{sections/field.tex}
 
 \input{sections/skills_certs.tex}
 
-\input{sections/awards.tex}
+% \input{sections/awards.tex}
 
-%% PUBLICATIONS \& PRESENTATIONS %%
-\section{Publications \& Presentations}
-\nocite{*}
-\printbibliography[heading=none]
+
 
 %% FOOTER %%
 \lastupdated
