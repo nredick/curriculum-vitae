@@ -3,7 +3,7 @@
 
 % define colors
 \RequirePackage{xcolor}
-\definecolor{accent}{HTML}{2e70bf}
+\definecolor{accent}{HTML}{245998}
 \definecolor{white}{HTML}{FFFFFF}
 \definecolor{black}{HTML}{000000}
 
@@ -39,10 +39,10 @@
 % \titleformat{⟨command⟩}[⟨shape⟩]{⟨format⟩}{⟨label⟩}{⟨sep⟩}{⟨before-code⟩}[⟨after-code⟩]
 \titleformat{\section}[block]{\color{accent}\large\scshape\raggedright}{}{0em}{}[\titlerule]
 
-\titlespacing{\section}{0pt}{0pt}{\defaultvspacing} % left, before, after
+\titlespacing{\section}{0pt}{\defaultvspacing}{\defaultvspacing} % left, before, after
 
 % add space before printbibliography text
-\renewcommand{\bibsetup}{\vspace{\defaultvspacing}}
+\renewcommand{\bibsetup}{}
 
 % make it so that unpublished bib entries are treated as misc
 \DeclareBibliographyAlias{unpublished}{misc}

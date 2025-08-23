@@ -3,13 +3,13 @@
 
 % base class, font size
 % todo: make font size adjustable
-\LoadClass[10pt]{article}
+\LoadClass[12pt]{article}
 
 % font family
 \RequirePackage[T1]{fontenc}
 % more font options: https://tug.org/FontCatalogue
 \RequirePackage[default]{sourcesanspro} % sans serif
-% \RequirePackage{lmodern} % serif
+% \RequirePackage{charter} % serif
 
 % non-numbered pages
 \pagenumbering{gobble}
@@ -23,10 +23,10 @@
 % todo: make margins adjustable
 \RequirePackage[
     a4paper,
-    left=1cm,
-    right=1cm,
-    top=0.75cm,
-    bottom=0.75cm
+    left=0.75in,
+    right=0.75in,
+    top=0.5in,
+    bottom=0.75in
 ]{geometry}
 
 % switch-case implementation (https://tex.stackexchange.com/a/420399)
@@ -50,9 +50,16 @@
 % https://ca.mirrors.cicku.me/ctan/macros/latex/contrib/isodate/isodate.pdf
 \RequirePackage[english,num]{isodate}
 \dateinputformat{tex} % (yyyy/mm/dd)
-\isorangesign{\ \textendash\ } % \ to enforce spaces around en dash
+\isorangesign{\textendash}
 \origdate
 \printdayoff
+
+% Redefine month names for English (abbreviated with periods)
+\makeatletter
+\def\month@english{%
+  \ifcase\month\or
+  Jan\or Feb\or Mar\or Apr\or May\or Jun\or Jul\or Aug\or Sept\or Oct\or Nov\or Dec\fi}
+\makeatother
 
 % icons
 \RequirePackage{fontawesome5}
@@ -78,10 +85,10 @@
 
 %% set default spacing
 % set default vertical spacing
-\newcommand{\defaultvspacing}{2.75pt}
+\newcommand{\defaultvspacing}{8pt}
 
 % set default horizontal spacing
-\newcommand{\defaulthspacing}{1pt}
+\newcommand{\defaulthspacing}{2pt}
 
 % define a default separator
 \RequirePackage{graphicx}
