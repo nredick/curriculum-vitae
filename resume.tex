@@ -15,17 +15,21 @@
 
 %% RESUME HEADER %%
 \resumeheader[
-    alignment=l,
+    alignment=r,
     firstname=Nathalie,
     lastname=Redick,
+    subtitle={curriculum vitae}
     % location={Davis, California}
 ]{
-    \inlinelocation{Davis, CA}\separator
+    % todo make it possible to have vertical links
+    % todo make personal website more clear/add it
+    % \inlinelocation{Davis, CA}\separator
     \resumeheaderlink{tel:+15184104084}{+1 (518) 410-4084}[\faPhone]\separator
     \resumeheaderlink{mailto:nrredick@ucdavis.edu}{nrredick@ucdavis.edu}[\faEnvelope]\separator
     \resumeheaderlink{https://linkedin.com/in/nredick}{nredick}[\faLinkedin]\separator
     \resumeheaderlink{https://github.com/nredick}{nredick}[\faGithub]\separator
-    \resumeheaderlink{https://orcid.org/0009-0005-5028-5299}{0009-0005-5028-5299}[\faOrcid]
+    \resumeheaderlink{https://orcid.org/0009-0005-5028-5299}{0009-0005-5028-5299}[\faOrcid] %\separator
+    % \resumeheaderlink{https://nredick.github.io}{nredick.github.io}[\faGlobe]
 }
 
 \vspace{0.5em}
@@ -38,9 +42,11 @@
 \input{sections/work.tex}
 
 %% PUBLICATIONS \& PRESENTATIONS %%
-\section{Publications \& Presentations}
+\section{Papers \& Talks\ssup{+}}
 \nocite{*}
 \printbibliography[heading=none]
+
+\input{sections/skills.tex}
 
 % \input{sections/research.tex}
 
@@ -50,14 +56,12 @@
 
 \input{sections/field.tex}
 
-\input{sections/skills_certs.tex}
+\input{sections/certs.tex}
 
-% \input{sections/awards.tex}
-
-
+\input{sections/awards.tex}
 
 %% FOOTER %%
-\lastupdated
+% \lastupdated
 
 %% END DOCUMENT %%
 \end{document}
