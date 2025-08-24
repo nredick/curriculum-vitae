@@ -39,7 +39,7 @@
 % \titleformat{⟨command⟩}[⟨shape⟩]{⟨format⟩}{⟨label⟩}{⟨sep⟩}{⟨before-code⟩}[⟨after-code⟩]
 \titleformat{\section}[block]{\color{accent}\large\scshape\raggedright}{}{0em}{}[\titlerule]
 
-\titlespacing{\section}{0pt}{\defaultvspacing}{\defaultvspacing} % left, before, after
+\titlespacing{\section}{0pt}{2pt}{\defaultvspacing} % left, before, after
 
 % add space before printbibliography text
 \renewcommand{\bibsetup}{}
@@ -55,5 +55,20 @@
   }
 }
 
-% bold titles in bibliography
-% \DeclareFieldFormat*{title}{\textbf{#1}}
+% fields that you don't want shown in the references
+\AtEveryBibitem{
+    \clearlist{address}
+    % \clearfield{date}
+    \clearfield{eprint}
+    %  \clearfield{isbn}
+    %  \clearfield{issn}
+    \clearlist{location}
+    \clearfield{month}
+    \clearfield{series}
+    \clearlist{language}
+    \clearfield{issue}
+    %  all three of these must be included to remove (visited on ...)
+    \clearfield{urldate}
+    \clearfield{urlyear}
+    \clearfield{urlmonth}
+}
