@@ -12,12 +12,14 @@
 % \RequirePackage{charter} % serif
 
 % non-numbered pages
-\pagenumbering{gobble}
+% \pagenumbering{gobble}
 
 % for more complex/optional inputs to commands
 \RequirePackage{xparse}
 \RequirePackage{etoolbox} % for AtBeginEnvironment defs, etc.
 \RequirePackage{keyval} % for key-value arguments
+\RequirePackage{fancyhdr} % for footer (last updated)
+\RequirePackage{lastpage} % for page numbering
 
 % page geometry/margins
 % todo: make margins adjustable
@@ -26,7 +28,8 @@
     left=0.75in,
     right=0.75in,
     top=0.5in,
-    bottom=0.75in
+    bottom=0.5in,
+    footskip=18pt,
 ]{geometry}
 
 % switch-case implementation (https://tex.stackexchange.com/a/420399)
@@ -71,8 +74,10 @@
 % publications import
 \RequirePackage[ % References
     backend=biber,
-    style=apa, % apa, nature, ieee, etc.
+    style=nature, % apa, nature, ieee, chicago-authordate, etc.
     sorting=ydnt, % Sort by year (descending), name, title
+    % labeldate=year,
+    date=year,
 ]{biblatex}
 \addbibresource{publications.bib}
 \RequirePackage{csquotes}
@@ -85,7 +90,7 @@
 
 %% set default spacing
 % set default vertical spacing
-\newcommand{\defaultvspacing}{8pt}
+\newcommand{\defaultvspacing}{6pt}
 
 % set default horizontal spacing
 \newcommand{\defaulthspacing}{2pt}
@@ -124,6 +129,11 @@
   \end{center}
 }
 
+% smaller superscript
+\newcommand{\ssup}[1]{%
+  \texorpdfstring{\textsuperscript{\scriptsize #1}}{#1}%
+}
+
 % define custom itemize
 \RequirePackage{enumitem}
 \newlist{resumeitemize}{itemize}{1}
@@ -149,22 +159,28 @@
 }
 
 \makeatletter
+% todo add a subtitle (i.e. curriculum vitae)
 % Define key-value pairs for the resume header
 \define@key{resumeheader}{alignment}[c]{\def\RH@alignment{#1}}
 \define@key{resumeheader}{firstname}{\def\RH@firstname{#1}}
 \define@key{resumeheader}{lastname}{\def\RH@lastname{#1}}
+\define@key{resumeheader}{subtitle}{\def\RH@subtitle{#1}}
 \define@key{resumeheader}{location}[]{\def\RH@location{#1}}
 \define@key{resumeheader}{locationicon}[]{\def\RH@locationicon{#1}}
 
 % Resume header command with key-value pairs and a group of links
 % todo: should i make links optional?
 \NewDocumentCommand{\resumeheader}{O{} m}{
-    \setkeys{resumeheader}{alignment=c,firstname=,lastname=,location=,locationicon=,#1}
+    \setkeys{resumeheader}{alignment=c,firstname=,lastname=,subtitle=,location=,locationicon=,#1}
     \begin{switch}{\RH@alignment}
         \case{c}{
             \begin{center}
                 \LARGE{\scshape\RH@firstname~\RH@lastname}
-                \ifx\RH@location\undefined
+                \ifx\RH@subtitle\empty
+                \else
+                    \\ \color{halfblack}\normalsize{\scshape\RH@subtitle}
+                \fi
+                \ifx\RH@location\empty
                 \else
                     \smallbreak
                     \normalsize\RH@location
@@ -175,7 +191,11 @@
         \case{l}{
             \begin{flushleft}
                 \LARGE{\scshape\RH@firstname~\RH@lastname}
-                \ifx\RH@location\undefined
+                \ifx\RH@subtitle\empty
+                \else
+                    \\ \color{halfblack}\normalsize{\scshape\RH@subtitle}
+                \fi
+                \ifx\RH@location\empty
                 \else
                     \smallbreak
                     \normalsize\RH@location
@@ -186,7 +206,11 @@
         \case{r}{
             \begin{flushright}
                 \LARGE{\scshape\RH@firstname~\RH@lastname}
-                \ifx\RH@location\undefined
+                \ifx\RH@subtitle\empty
+                \else
+                    \\ \color{halfblack}\normalsize{\scshape\RH@subtitle}
+                \fi
+                \ifx\RH@location\empty
                 \else
                     \smallbreak
                     \normalsize\RH@location
@@ -210,7 +234,7 @@
     % #3: Optional icon or additional text before the link text (optional)
 
     % Check if the optional argument #3 (icon) is provided
-    \ifx#3\undefined
+    \ifx#3\empty
         % No icon provided
         \href{#1}{#2}
     \else
@@ -224,14 +248,14 @@
 % Define key-value pairs for the education block
 \define@key{edu}{layout}[2]{\def\SH@layout{#1}} % Default layout is 2
 \define@key{edu}{name}{\def\SH@name{#1}} % edu Name
-\define@key{edu}{location}{\def\SH@location{#1}} % edu Location
 \define@key{edu}{date}{\def\SH@date{#1}} % Date
+\define@key{edu}{location}[]{\def\SH@location{#1}} % edu Location (optional)
 \define@key{edu}{gpa}[]{\def\SH@gpa{#1}} % GPA (optional)
 \define@key{edu}{degree}[]{\def\SH@degree{#1}} % Degree (optional)
 
 % edu command with key-value pairs and a separate description argument
 \NewDocumentCommand{\edu}{O{} m}{
-    \setkeys{edu}{layout=2,name=,location=,date=,gpa=,degree=,#1}
+    \setkeys{edu}{layout=2,name=,date=,location=,gpa=,degree=,#1}
 
     % Determine the layout based on the `layout` key
     \begin{switch}{\SH@layout}
@@ -241,14 +265,14 @@
                 % Display the edu name in bold and location in italic
                 \textbf{\SH@name},~\textit{\SH@location}
                 % Optionally include the degree if provided
-                \ifx\SH@degree\undefined
+                \ifx\SH@degree\empty
                     % Do nothing if degree is empty
                 \else
                     \separator\SH@degree
                 \fi
                 % Align GPA and date on the right
                 & \hfill
-                & \ifx\SH@gpa\undefined
+                & \ifx\SH@gpa\empty
                     \SH@date
                 \else
                     \SH@gpa\,\separator\SH@date
@@ -256,7 +280,7 @@
             \end{tabularx}
 
             % Handle the description as a separate argument if provided
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if #2 is empty
             \else
                 #2
@@ -268,7 +292,12 @@
                 % Display the edu name in bold
                 \textbf{\SH@name}
                 % Optionally include the degree if provided
-                \ifx\SH@degree\undefined
+                % \ifcsname SH@degree\endcsname
+                %     \separator \SH@degree
+                % \else
+                %     % Do nothing if degree is empty
+                % \fi
+                \ifx\SH@degree\empty
                     % Do nothing if degree is empty
                 \else
                     \separator \SH@degree
@@ -279,7 +308,7 @@
                 % Display the edu location in italic and GPA
                 \textit{\SH@location}
                 & \hfill
-                & \ifx\SH@gpa\undefined
+                & \ifx\SH@gpa\empty
                     % Do nothing if GPA is empty
                 \else
                     \SH@gpa
@@ -287,11 +316,62 @@
             \end{tabularx}
 
             % Handle the description as a separate argument if provided
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if #2 is empty
             \else
                 #2
             \fi
+        }
+        \case{3}{
+            % todo make it possible to set the minipage proportions
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
+                % Content for the first minipage
+                \SH@date
+            \end{minipage}%
+            \hfill
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
+                % Content for the second minipage
+                \ifx\SH@degree\empty
+                    % if no degree provided, just use institution name
+                    \begin{tabularx}{\textwidth}{@{}lXr@{}}
+                        \textbf{\SH@name}
+                        \ifx\SH@gpa\empty
+                            % do nothing
+                        \else
+                            ~(\SH@gpa)
+                        \fi
+                        & \hfill
+                        \ifx\SH@location\empty
+                            % do nothing
+                        \else
+                            \textit{\SH@location}
+                        \fi
+                    \end{tabularx}
+                \else
+                    \begin{tabularx}{\textwidth}{@{}lXr@{}}
+                        \textbf{\SH@degree}
+                        \ifx\SH@gpa\empty
+                            % do nothing
+                        \else
+                            ~(\SH@gpa)
+                        \fi
+                        & \hfill
+                        & \SH@name
+                        \ifx\SH@location\empty
+                            % do nothing
+                        \else
+                            ~\separator \textit{\SH@location}
+                        \fi
+                    \end{tabularx}
+                \fi
+
+                % Handle the description as a separate argument if provided
+                \ifx#2\empty
+                    % Do nothing if #2 is empty
+                \else
+                    #2
+                \fi
+            \end{minipage}
         }
     \end{switch}
 
@@ -322,7 +402,7 @@
                 % Display the job title in bold and company name
                 \textbf{\EX@title}\ @\ \EX@company
                 % Check if the link is non-empty
-                \ifx\EX@link\@empty
+                \ifx\EX@link\empty
                     % Do nothing if link is empty
                 \else
                     % If link is provided, insert icon with href
@@ -334,7 +414,7 @@
             \end{tabularx}
 
             % Add the description within the 1-line layout
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if #2 is empty
             \else
                 #2
@@ -352,7 +432,7 @@
                 \EX@company
                 % Optionally include the company website link if provided
                 % Check if the link is non-empty
-                \ifx\EX@link\@empty
+                \ifx\EX@link\empty
                     % Do nothing if link is empty
                 \else
                     % If link is provided, insert icon with href
@@ -363,11 +443,40 @@
             \end{tabularx}
 
             % Add the description within the 2-line layout
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if #2 is empty
             \else
                 #2
             \fi
+        }
+        \case{3}{
+            % todo make it possible to set the minipage proportions
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
+                % Content for the first minipage
+                \EX@date
+            \end{minipage}%
+            \hfill
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
+                % Content for the second minipage
+                \begin{tabularx}{\textwidth}{@{}lXr@{}}
+                    \textbf{\EX@title} @ %\EX@company
+                    \ifx\EX@link\empty
+                        \EX@company% Do nothing if link is empty
+                    \else
+                        % If link is provided, insert icon with href
+                        % \EX@company ~\href{\EX@link}{\linkicon}
+                        ~\href{\EX@link}{\EX@company}
+                    \fi
+                    & \hfill
+                    & \textit{\EX@location}
+                \end{tabularx}
+                % Handle the description as a separate argument if provided
+                \ifx#2\empty
+                    % Do nothing if #2 is empty
+                \else
+                    #2
+                \fi
+            \end{minipage}
         }
     \end{switch}
 
@@ -397,7 +506,7 @@
                 % Display the award title and organization
                 \textit{\AW@title},\ \AW@organization
                 % Optionally include the amount if provided
-                \ifx\AW@amount\@empty
+                \ifx\AW@amount\empty
                     % Do nothing if amount is not provided
                 \else
                     ~(\AW@amount) % Add amount in parentheses if provided
@@ -408,7 +517,7 @@
             \end{tabularx}
 
             % Description as a separate argument
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if no description
             \else
                 #2
@@ -426,7 +535,7 @@
                 \AW@organization
                 % Optionally include the amount if provided
                 & \hfill
-                & \ifx\AW@amount\@empty
+                & \ifx\AW@amount\empty
                     % Do nothing if no amount
                 \else
                     \AW@amount
@@ -434,7 +543,7 @@
             \end{tabularx}
 
             % Description as a separate argument
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if no description
             \else
                 #2
@@ -497,24 +606,49 @@
 % block for skills with n cols
 \makeatletter
 % Define key-value pairs for the skill block
-\define@key{skills}{cols}[2]{\def\SK@cols{#1}} % Default cols is 2
+\define@key{skills}{name}{\def\SK@name{#1}}
+% \define@key{skills}{cols}[1]{\def\SK@cols{#1}}
+\define@key{skills}{layout}[2]{\def\SK@layout{#1}}
+
 
 % Skill command with key-value pairs
 \NewDocumentCommand{\skills}{O{} m}{
-    \setkeys{skills}{cols=2,#1}
+    \setkeys{skills}{name=,layout=2,#1}
 
     % Determine the number of cols based on the `cols` key
+    \begin{switch}{\SK@layout}
+        \case{1}{
+            % \ifnum\SK@cols=1
+            %     #2
+            % \else
+            %     \setlength{\multicolsep}{0pt}
+            %     \begin{multicols}{\SK@cols}
+            %         \noindent
+            %         #2
+            %     \end{multicols}
+            % \fi
+        }
+        \case{2}{
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
+                % Content for the first minipage
+                \textbf{\SK@name}
+            \end{minipage}%
+            \hfill
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
+                % Content for the second minipage
+                % Description as a separate argument
+                \ifx#2\empty
+                    % Do nothing if no description
+                \else
+                    #2
+                \fi
+            \end{minipage}
+        }
+
+    \end{switch}
 
     % if equals 1 then no multicols env
-    \ifnum\SK@cols=1
-        #2
-    \else
-        \setlength{\multicolsep}{0pt}
-        \begin{multicols}{\SK@cols}
-            \noindent
-            #2
-        \end{multicols}
-    \fi
+
 
     % Add vertical spacing after the entry
     \vspace{\defaultvspacing}
@@ -545,7 +679,7 @@
                 % Display the certification title and organization
                 \textit{\CERT@title},\ \CERT@organization
                 % Optionally include the expiration date if provided
-                \ifx\CERT@expiration\@empty
+                \ifx\CERT@expiration\empty
                     % Do nothing if expiration date is not provided
                 \else
                     ~(Expires \CERT@expiration) % Add expiration date in parentheses if provided
@@ -556,7 +690,7 @@
             \end{tabularx}
 
             % Description as a separate argument
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if no description
             \else
                 #2
@@ -574,7 +708,7 @@
                 \CERT@organization
                 % Optionally include the expiration date if provided
                 & \hfill
-                & \ifx\CERT@expiration\@empty
+                & \ifx\CERT@expiration\empty
                     % Do nothing if no expiration date
                 \else
                     \CERT@expiration
@@ -582,7 +716,7 @@
             \end{tabularx}
 
             % Description as a separate argument
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if no description
             \else
                 #2
@@ -593,12 +727,14 @@
     % % Add vertical spacing after the entry
     % \vspace{\defaultvspacing}
 }
+\makeatother
 
-% create a block for teaching experience
+
+% block for teaching experience
 \makeatletter
 % Define key-value pairs for the teaching block
 \define@key{teaching}{layout}[2]{\def\TEACH@layout{#1}} % Default layout is 2
-\define@key{teaching}{title}{\def\TEACH@title{#1}} % Course Title
+\define@key{teaching}{course}{\def\TEACH@course{#1}} % Course title
 \define@key{teaching}{institution}{\def\TEACH@institution{#1}} % Institution Name
 \define@key{teaching}{location}{\def\TEACH@location{#1}} % Institution Location
 \define@key{teaching}{date}{\def\TEACH@date{#1}} % Date
@@ -606,7 +742,7 @@
 
 % Teaching command with key-value pairs and a separate description argument
 \NewDocumentCommand{\teaching}{O{} m}{
-    \setkeys{teaching}{layout=2,title=,institution=,location=,date=,link=,#1}
+    \setkeys{teaching}{layout=2,course=,institution=,location=,date=,link=,#1}
 
     % Determine the layout based on the `layout` key
     \begin{switch}{\TEACH@layout}
@@ -614,9 +750,9 @@
             % Case for 1-line layout
             \begin{tabularx}{\textwidth}{@{}lXr@{}}
                 % Display the course title and institution
-                \textbf{\TEACH@title},\ \TEACH@institution
+                \textbf{\TEACH@course},\ \TEACH@institution
                 % Optionally include the location if provided
-                \ifx\TEACH@location\@empty
+                \ifx\TEACH@location\empty
                     % Do nothing if location is not provided
                 \else
                     ~(\TEACH@location) % Add location in parentheses if provided
@@ -627,7 +763,7 @@
             \end{tabularx}
 
             % Description as a separate argument
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if no description
             \else
                 #2
@@ -637,15 +773,15 @@
             % Case for 2-line layout (default)
             \begin{tabularx}{\textwidth}{@{}lXr@{}}
                 % Display the course title
-                \textbf{\TEACH@title}
+                \textbf{\TEACH@course}
                 % Align the date on the right
                 & \hfill
-                & \TEACH@date \\ % Course Title and Date
+                & \TEACH@date \\ % Course title and Date
                 % Display the institution name
                 \TEACH@institution
                 % Optionally include the location if provided
                 & \hfill
-                & \ifx\TEACH@location\@empty
+                & \ifx\TEACH@location\empty
                     % Do nothing if no location
                 \else
                     \TEACH@location
@@ -653,33 +789,175 @@
             \end{tabularx}
 
             % Description as a separate argument
-            \ifx#2\undefined
+            \ifx#2\empty
                 % Do nothing if no description
             \else
                 #2
             \fi
+        }
+        \case{3}{
+            % todo make it possible to set the minipage proportions
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
+                % Content for the first minipage
+                \TEACH@date
+            \end{minipage}%
+            \hfill
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
+                % Content for the second minipage
+                \begin{tabularx}{\textwidth}{@{}lXr@{}}
+                    \textbf{\TEACH@course}
+                    & \hfill
+                    & %\TEACH@institution
+                    \ifx\TEACH@link\empty
+                        \TEACH@institution% Do nothing if link is empty
+                    \else
+                        % If link is provided, insert icon with href
+                        % \TEACH@institution ~\href{\TEACH@link}{\linkicon}
+                        ~\href{\TEACH@link}{\TEACH@institution}
+                    \fi
+
+                    % & \textit{\TEACH@location}
+                \end{tabularx}
+                % Handle the description as a separate argument if provided
+                \ifx#2\empty
+                    % Do nothing if #2 is empty
+                \else
+                    #2
+                \fi
+            \end{minipage}
         }
     \end{switch}
 
     % Add vertical spacing after the entry
     \vspace{\defaultvspacing}
 }
+\makeatother
 
-% Bibliography cleanup
-\AtEveryBibitem{
-  \clearlist{address}
-  \clearfield{date}
-  \clearfield{eprint}
-%   \clearfield{isbn}
-%   \clearfield{issn}
-  \clearlist{location}
-  \clearfield{month}
-  \clearfield{series}
-  \clearfield{urldate}
-  \clearfield{urlyear}
-  \clearfield{urlmonth}
-  \clearfield{note}
+
+% block for field experience
+\makeatletter
+% Define key-value pairs for the field block
+\define@key{field}{layout}[2]{\def\FLD@layout{#1}} % Default layout is 2
+\define@key{field}{activity}{\def\FLD@activity{#1}} % What you did
+\define@key{field}{who}{\def\FLD@who{#1}} % Institutions, organizers, etc.
+\define@key{field}{location}{\def\FLD@location{#1}} % Institution Location
+\define@key{field}{date}{\def\FLD@date{#1}} % Date
+\define@key{field}{length}{\def\FLD@length{#1}} % length
+\define@key{field}{link}[]{\def\FLD@link{#1}} % Link to course (optional)
+
+% field command with key-value pairs and a separate description argument
+\NewDocumentCommand{\field}{O{} m}{
+    \setkeys{field}{layout=2,activity=,who=,location=,date=,length=,link=,#1}
+
+    % Determine the layout based on the `layout` key
+    \begin{switch}{\FLD@layout}
+        \case{1}{
+            % Case for 1-line layout
+            \begin{tabularx}{\textwidth}{@{}lXr@{}}
+                % Display the course title and institution
+                \textbf{\FLD@activity},\ \FLD@who
+                % Optionally include the location if provided
+                \ifx\FLD@location\empty
+                    % Do nothing if location is not provided
+                \else
+                    ~(\FLD@location) % Add location in parentheses if provided
+                \fi
+                % Align the date on the right
+                & \hfill
+                & \FLD@date
+                \ifx\FLD@length\empty
+                    % Do nothing if location is not provided
+                \else
+                    ~(\FLD@length) % Add location in parentheses if provided
+                \fi
+            \end{tabularx}
+
+            % Description as a separate argument
+            \ifx#2\empty
+                % Do nothing if no description
+            \else
+                #2
+            \fi
+        }
+        \case{2}{
+            % Case for 2-line layout (default)
+            \begin{tabularx}{\textwidth}{@{}lXr@{}}
+                % Display the course title
+                \textbf{\FLD@activity}
+                % Align the date on the right
+                & \hfill
+                & \FLD@date
+                \ifx\FLD@length\empty
+                    % Do nothing if location is not provided
+                \else
+                    ~(\FLD@length) % Add location in parentheses if provided
+                \fi
+                \\
+                % Display the institution name
+                \FLD@who
+                % Optionally include the location if provided
+                & \hfill
+                & \ifx\FLD@location\empty
+                    % Do nothing if no location
+                \else
+                    \FLD@location
+                \fi
+            \end{tabularx}
+
+            % Description as a separate argument
+            \ifx#2\empty
+                % Do nothing if no description
+            \else
+                #2
+            \fi
+        }
+        \case{3}{
+            % todo make it possible to set the minipage proportions
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
+                % Content for the first minipage
+                \FLD@date \\
+                \ifx\FLD@length\empty
+                    % Do nothing if location is not provided
+                \else
+                    \textit{\small \FLD@length} % Add location in parentheses if provided
+                \fi
+            \end{minipage}%
+            \hfill
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
+                % Content for the second minipage
+                \begin{tabularx}{\textwidth}{@{}lXr@{}}
+                    \textbf{\FLD@activity}
+                    & \hfill
+                    & \FLD@location
+                    % \\
+                    % \FLD@who
+                    % \ifx\FLD@link\empty
+                    %     \textit{\FLD@who}% Do nothing if link is empty
+                    % \else
+                    %     % If link is provided, insert icon with href
+                    %     % \FLD@who ~\href{\FLD@link}{\linkicon}
+                    %     ~\href{\FLD@link}{\textit{\FLD@who}}
+                    % \fi
+                    % & 1
+                    % & \textit{\FLD@location}
+                \end{tabularx}
+                \textit{\FLD@who}
+                % Handle the description as a separate argument if provided
+                \ifx#2\empty
+                    % Do nothing if #2 is empty
+                \else
+                    #2
+                \fi
+            \end{minipage}
+        }
+    \end{switch}
+
+    % Add vertical spacing after the entry
+    \vspace{\defaultvspacing}
 }
+\makeatother
+
+
 
 % suppress the annoying hbox overfull warning
 \hfuzz=11in
@@ -691,3 +969,59 @@
     \footnotesize{\color{halfblack}{Last updated: \printdayon\today}}
   \end{tightcenter}
 }
+
+% Set up the fancyhdr style *after* the document begins
+\AtBeginDocument{%
+  \pagestyle{fancy}
+  \fancyhf{}                       % clear header/footer
+  \fancyfoot[C]{\footnotesize{\color{halfblack}{Last updated: \printdayon\today}}}      % center footer
+%   \quad (Page \thepage/\pageref{LastPage})
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+% make sure the event title (e.g. AGU23) is printed for @misc entries
+\renewbibmacro*{title}{%
+  \printfield{title}%
+  \iffieldundef{eventtitle}{}{\setunit~.\printfield{eventtitle}}%
+  \setunit{\adddot\space}%
+%   \printfield{subtitle}%
+  \newunit
+}
+
+% add + to talks
+\renewbibmacro*{author}{%
+  \ifentrytype{misc}{%
+    \ssup{+}
+  }{}%
+  \printnames{author}%
+}
+
+% bibliography name highlighting
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      % Match last name 'Doe' in author field and bold it
+      \step[fieldsource=author,
+            match=\regexp{(.*?)(Redick)(.*)},
+            replace=\regexp{$1\\textbf{$2}$3}]
+    }
+    % \map{
+    %   % Add more last names if needed
+    %   \step[fieldsource=author,
+    %         match=\regexp{(.*?)(Tarling)(.*)},
+    %         replace=\regexp{$1\\textbf{$2}$3}]
+    % }
+  }
+}
+
+% this one works (bolds full name), but will expand the first name
+% \DeclareSourcemap{
+%   \maps[datatype=bibtex]{
+%     \map{
+%       \step[fieldsource=author,
+%             match=\regexp{([^,]*Redick[^,]*(?:, [^,]*)?)(?=\s+and|\s*$)},
+%             replace=\regexp{\\textbf{$1}}]
+%     }
+%   }
+% }
