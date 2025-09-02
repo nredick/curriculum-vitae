@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DIR: .
-      FILE: resume # desired tex/pdf file name (without extension)
+      FILE: cv # desired tex/pdf file name (without extension)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
