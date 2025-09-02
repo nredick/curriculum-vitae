@@ -1,0 +1,67 @@
+% !TeX root = cv.tex
+\documentclass{cv} % custom class file
+\usepackage{cv} % custom styling
+
+%% PREAMBLE %%
+\usepackage[english]{babel}
+
+%% SET DEFAULTS %%
+% \renewcommand{\defaultseparator}{$|$} % ex. set the default separator
+
+%% END PREAMBLE %%
+
+%% BEGIN DOCUMENT %%
+\begin{document}
+
+%% cv HEADER %%
+\cvheader[
+    alignment=r,
+    firstname=Nathalie,
+    lastname=Redick,
+    subtitle={curriculum vitae}
+    % location={Davis, California}
+]{
+    % todo make it possible to have vertical links
+    % todo make personal website more clear/add it
+    % \inlinelocation{Davis, CA}\separator
+    \cvheaderlink{tel:+15184104084}{+1 (518) 410-4084}[\faPhone]\separator
+    \cvheaderlink{mailto:nrredick@ucdavis.edu}{nrredick@ucdavis.edu}[\faEnvelope]\separator
+    \cvheaderlink{https://linkedin.com/in/nredick}{nredick}[\faLinkedin]\separator
+    \cvheaderlink{https://github.com/nredick}{nredick}[\faGithub]\separator
+    \cvheaderlink{https://orcid.org/0009-0005-5028-5299}{0009-0005-5028-5299}[\faOrcid] %\separator
+    % \cvheaderlink{https://nredick.github.io}{nredick.github.io}[\faGlobe]
+}
+
+\vspace{0.5em}
+% \section{Objective}
+
+% Masters student in Geophysics at UC Davis seeking a summer internship with NASA Jet Propulsion Laboratory working on a project related to the geosciences, machine learning and data science, or software development.
+
+\input{sections/education.tex}
+
+\input{sections/work.tex}
+
+%% PUBLICATIONS \& PRESENTATIONS %%
+\section{Papers \& Talks\ssup{+}}
+\nocite{*}
+\printbibliography[heading=none]
+
+\input{sections/skills.tex}
+
+% \input{sections/research.tex}
+
+\input{sections/service.tex}
+
+\input{sections/teaching.tex}
+
+\input{sections/field.tex}
+
+\input{sections/certs.tex}
+
+\input{sections/awards.tex}
+
+%% FOOTER %%
+% \lastupdated
+
+%% END DOCUMENT %%
+\end{document}
