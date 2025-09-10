@@ -997,6 +997,46 @@
   \printnames{author}%
 }
 
+% Format venue and location fields
+\DeclareFieldFormat{venue}{\textit{#1}}
+\DeclareFieldFormat{location}{#1}
+
+% Custom driver for misc entries to include venue
+\DeclareBibliographyDriver{misc}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/translator+others}%
+  \setunit{\printdelim{nametitledelim}}\newblock
+  \usebibmacro{title}%
+  \newunit\newblock
+  \printfield{note}%
+  \newunit\newblock
+  % Add type if present
+  \iffieldundef{type}{}{%
+    \printfield{type}%
+    \setunit{\addcomma\space}%
+  }%
+  % Add venue information
+  \iffieldundef{venue}{}{%
+    \printfield{venue}%
+  }%
+  \setunit{\adddot\space}\newblock
+  \usebibmacro{url+urldate}%
+  \setunit{\space}%
+  % Add date in parentheses at the end
+  \printtext[parens]{\usebibmacro{date}}%
+  \newunit\newblock
+  \usebibmacro{addendum+pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \newunit\newblock
+  \iftoggle{bbx:related}
+    {\usebibmacro{related:init}%
+     \usebibmacro{related}}
+    {}%
+  \usebibmacro{finentry}%
+}
+
 % bibliography name highlighting
 \DeclareSourcemap{
   \maps[datatype=bibtex]{
