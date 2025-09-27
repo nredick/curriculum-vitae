@@ -262,21 +262,18 @@
         \case{1}{
             % Case for 1-line layout
             \begin{tabularx}{\textwidth}{@{}lXr@{}}
-                % Display the edu name in bold and location in italic
-                \textbf{\SH@name},~\textit{\SH@location}
-                % Optionally include the degree if provided
-                \ifx\SH@degree\empty
-                    % Do nothing if degree is empty
+                \ifx\SH@gpa\empty
+                    \textbf{\SH@degree}~@~\SH@name
                 \else
-                    \separator\SH@degree
+                    \textbf{\SH@degree}~@~\SH@name~(\SH@gpa)
                 \fi
-                % Align GPA and date on the right
                 & \hfill
-                & \ifx\SH@gpa\empty
+                & \ifx\SH@location\empty
                     \SH@date
                 \else
-                    \SH@gpa\,\separator\SH@date
+                    \textit{\SH@location}\,\separator\SH@date
                 \fi
+                % ,~\textit{\SH@location}
             \end{tabularx}
 
             % Handle the description as a separate argument if provided
@@ -289,29 +286,21 @@
         \case{2}{
             % Case for 2-line layout (default)
             \begin{tabularx}{\textwidth}{@{}lXr@{}}
-                % Display the edu name in bold
-                \textbf{\SH@name}
-                % Optionally include the degree if provided
-                % \ifcsname SH@degree\endcsname
-                %     \separator \SH@degree
-                % \else
-                %     % Do nothing if degree is empty
-                % \fi
-                \ifx\SH@degree\empty
-                    % Do nothing if degree is empty
+                \textbf{\SH@degree}
+                \ifx\SH@gpa\empty
+                    % Do nothing if gpa is empty
                 \else
-                    \separator \SH@degree
+                    ~(\SH@gpa)
                 \fi
-                % Align the date on the right
                 & \hfill
-                & \SH@date \\ % edu Name and Date
+                & \SH@date \\
                 % Display the edu location in italic and GPA
-                \textit{\SH@location}
+                \textit{\SH@name}
                 & \hfill
-                & \ifx\SH@gpa\empty
-                    % Do nothing if GPA is empty
+                & \ifx\SH@location\empty
+                    % Do nothing if location is empty
                 \else
-                    \SH@gpa
+                    \textit{\SH@location}
                 \fi
             \end{tabularx}
 
@@ -319,12 +308,14 @@
             \ifx#2\empty
                 % Do nothing if #2 is empty
             \else
+                \vspace{2pt}
                 #2
             \fi
+
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.20\textwidth} % 10% width
+            \begin{minipage}[t]{0.205\textwidth} % 10% width
                 % Content for the first minipage
                 \SH@date
             \end{minipage}%
@@ -451,7 +442,7 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.20\textwidth} % 10% width
+            \begin{minipage}[t]{0.205\textwidth} % 10% width
                 % Content for the first minipage
                 \EX@date
             \end{minipage}%
@@ -629,7 +620,7 @@
             % \fi
         }
         \case{2}{
-            \begin{minipage}[t]{0.20\textwidth} % 10% width
+            \begin{minipage}[t]{0.205\textwidth} % 10% width
                 % Content for the first minipage
                 \textbf{\SK@name}
             \end{minipage}%
@@ -797,7 +788,7 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.20\textwidth} % 10% width
+            \begin{minipage}[t]{0.205\textwidth} % 10% width
                 % Content for the first minipage
                 \TEACH@date
             \end{minipage}%
@@ -913,7 +904,7 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.20\textwidth} % 10% width
+            \begin{minipage}[t]{0.205\textwidth} % 10% width
                 % Content for the first minipage
                 \FLD@date \\
                 \ifx\FLD@length\empty
