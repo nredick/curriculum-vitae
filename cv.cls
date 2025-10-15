@@ -800,11 +800,11 @@
                     & \hfill
                     & %\TEACH@institution
                     \ifx\TEACH@link\empty
-                        \TEACH@institution% Do nothing if link is empty
+                        \textit{\TEACH@institution}% Do nothing if link is empty
                     \else
                         % If link is provided, insert icon with href
                         % \TEACH@institution ~\href{\TEACH@link}{\linkicon}
-                        ~\href{\TEACH@link}{\TEACH@institution}
+                        ~\href{\TEACH@link}{\textit{\TEACH@institution}}
                     \fi
 
                     % & \textit{\TEACH@location}
@@ -919,7 +919,7 @@
                 \begin{tabularx}{\textwidth}{@{}lXr@{}}
                     \textbf{\FLD@activity}
                     & \hfill
-                    & \FLD@location
+                    & \textit{\FLD@location}
                     % \\
                     % \FLD@who
                     % \ifx\FLD@link\empty
