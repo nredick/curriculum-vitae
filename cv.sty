@@ -39,7 +39,39 @@
 % \titleformat{⟨command⟩}[⟨shape⟩]{⟨format⟩}{⟨label⟩}{⟨sep⟩}{⟨before-code⟩}[⟨after-code⟩]
 \titleformat{\section}[block]{\color{accent}\large\scshape\raggedright}{}{0em}{}[\titlerule]
 
+% Subsection headings style
+\titleformat{\subsection}[block]
+  {\color{accent}\normalsize\itshape\scshape\raggedright} % format: italic, same accent color
+  {} % no label
+  {0em} % separation
+  {} % before-code
+  [] % after-code (no rule)
+
 \titlespacing{\section}{0pt}{2pt}{\defaultvspacing} % left, before, after
+
+\titlespacing*{\subsection}{0pt}{0pt}{0.75\defaultvspacing} % removes almost all extra space
+
+% bibliography spacing
+\setlength{\bibitemsep}{0.75ex} % spacing between items
+\setlength{\bibhang}{1.5em}               % hanging indent
+\setlength{\bibinitsep}{0pt}
+\setlength{\bibparsep}{0pt}
+
+\defbibenvironment{bibliography}
+  {\list
+     {}
+     {
+      \setlength{\leftmargin}{\bibhang}   % hanging indent
+    %   \setlength{\itemindent}{-\bibhang} % negative first line
+      \setlength{\itemsep}{\bibitemsep}  % space between items
+      \setlength{\parsep}{\bibparsep}
+      \setlength{\topsep}{0pt}           % remove extra space above
+      \setlength{\partopsep}{0pt}       % remove extra space above
+      \setlength{\parskip}{0pt}         % remove extra space after
+     }
+  }
+  {\endlist\vspace{\defaultvspacing}}
+  {\item}
 
 % add space before printbibliography text
 \renewcommand{\bibsetup}{}

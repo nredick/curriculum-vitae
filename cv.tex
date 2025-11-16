@@ -8,6 +8,12 @@
 %% SET DEFAULTS %%
 % \renewcommand{\defaultseparator}{$|$} % ex. set the default separator
 
+% add bib resources
+\addbibresource{Papers.bib}
+\addbibresource{Talks.bib}
+\addbibresource{Abstracts.bib}
+\addbibresource{Posts.bib}
+
 %% END PREAMBLE %%
 
 %% BEGIN DOCUMENT %%
@@ -35,26 +41,23 @@
 \vspace{0.5em}
 % \section{Objective}
 
-% Masters student in Geophysics at UC Davis seeking a summer internship with NASA Jet Propulsion Laboratory working on a project related to the geosciences, machine learning and data science, or software development.
+% Masters student in Geophysics at UC Davis seeking a summer internship with NASA Jet Propulsion Laboratory working on a project related to the geosciences, machine learning \& data science, or software development.
 
 \input{sections/education.tex}
 
 \input{sections/work.tex}
 
-%% PUBLICATIONS \& PRESENTATIONS %%
-\section{Papers \& Talks\ssup{+}}
-\nocite{*}
-\printbibliography[heading=none]
+\input{sections/pubs.tex}
 
 \input{sections/field.tex}
 
-\input{sections/skills.tex}
-
 % \input{sections/research.tex}
+
+\input{sections/service.tex}
 
 \input{sections/teaching.tex}
 
-\input{sections/service.tex}
+\input{sections/skills.tex}
 
 \input{sections/awards.tex}
 

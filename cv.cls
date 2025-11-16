@@ -3,7 +3,7 @@
 
 % base class, font size
 % todo: make font size adjustable
-\LoadClass[12pt]{article}
+\LoadClass[11pt]{article}
 
 % font family
 \RequirePackage[T1]{fontenc}
@@ -21,12 +21,17 @@
 \RequirePackage{fancyhdr} % for footer (last updated)
 \RequirePackage{lastpage} % for page numbering
 
+% for layout=3 col sizes
+\RequirePackage{pgf}
+\newcommand{\leftcolsize}{0.18}
+\pgfmathsetmacro{\rightcolsize}{0.98 - \leftcolsize}
+
 % page geometry/margins
 % todo: make margins adjustable
 \RequirePackage[
     a4paper,
-    left=0.75in,
-    right=0.75in,
+    left=0.5in,
+    right=0.5in,
     top=0.5in,
     bottom=0.5in,
     footskip=18pt,
@@ -74,12 +79,33 @@
 % publications import
 \RequirePackage[ % References
     backend=biber,
-    style=nature, % apa, nature, ieee, chicago-authordate, etc.
-    sorting=ydnt, % Sort by year (descending), name, title
+    style=apa, % apa, nature, ieee, chicago-authordate, etc.
+    sorting=ydmnt, % Sort by year (descending), name, title
     % labeldate=year,
     date=year,
 ]{biblatex}
-\addbibresource{publications.bib}
+% \addbibresource{publications.bib}
+
+\DeclareSortingTemplate{ymdnt}{
+  \sort[direction=descending]{
+    \field{year}
+  }
+  \sort[direction=descending]{
+    \field{month}
+  }
+  \sort[direction=descending]{
+    \field{day}
+  }
+  \sort{
+    \field{author}
+  }
+  \sort{
+    \field{title}
+  }
+}
+
+\ExecuteBibliographyOptions{sorting=ymdnt}
+
 \RequirePackage{csquotes}
 
 % table settings
@@ -315,12 +341,12 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.205\textwidth} % 10% width
+            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
                 % Content for the first minipage
                 \SH@date
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{0.77\textwidth} % 90% width
+            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
                 % Content for the second minipage
                 \ifx\SH@degree\empty
                     % if no degree provided, just use institution name
@@ -442,15 +468,15 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.205\textwidth} % 10% width
+            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
                 % Content for the first minipage
                 \EX@date
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{0.77\textwidth} % 90% width
+            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
                 % Content for the second minipage
                 \begin{tabularx}{\textwidth}{@{}lXr@{}}
-                    \textbf{\EX@title} @ %\EX@company
+                    \textbf{\EX@title}\ @\ %\EX@company
                     \ifx\EX@link\empty
                         \EX@company% Do nothing if link is empty
                     \else
@@ -620,12 +646,12 @@
             % \fi
         }
         \case{2}{
-            \begin{minipage}[t]{0.205\textwidth} % 10% width
+            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
                 % Content for the first minipage
                 \textbf{\SK@name}
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{0.77\textwidth} % 90% width
+            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
                 % Content for the second minipage
                 % Description as a separate argument
                 \ifx#2\empty
@@ -788,12 +814,12 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.205\textwidth} % 10% width
+            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
                 % Content for the first minipage
                 \TEACH@date
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{0.77\textwidth} % 90% width
+            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
                 % Content for the second minipage
                 \begin{tabularx}{\textwidth}{@{}lXr@{}}
                     \textbf{\TEACH@course}
@@ -904,7 +930,7 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{0.205\textwidth} % 10% width
+            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
                 % Content for the first minipage
                 \FLD@date \\
                 \ifx\FLD@length\empty
@@ -914,7 +940,7 @@
                 \fi
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{0.77\textwidth} % 90% width
+            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
                 % Content for the second minipage
                 \begin{tabularx}{\textwidth}{@{}lXr@{}}
                     \textbf{\FLD@activity}
@@ -965,7 +991,7 @@
 \AtBeginDocument{%
   \pagestyle{fancy}
   \fancyhf{}                       % clear header/footer
-  \fancyfoot[C]{\footnotesize{\color{halfblack}{Last updated: \printdayon\today}}}      % center footer
+%   \fancyfoot[C]{\footnotesize{\color{halfblack}{Last updated: \printdayon\today}}}      % center footer
 %   \quad (Page \thepage/\pageref{LastPage})
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
@@ -981,12 +1007,12 @@
 }
 
 % add + to talks
-\renewbibmacro*{author}{%
-  \ifentrytype{misc}{%
-    \ssup{+}
-  }{}%
-  \printnames{author}%
-}
+% \renewbibmacro*{author}{%
+%   \ifentrytype{misc}{%
+%     \ssup{+}
+%   }{}%
+%   \printnames{author}%
+% }
 
 % Format venue and location fields
 \DeclareFieldFormat{venue}{\textit{#1}}
