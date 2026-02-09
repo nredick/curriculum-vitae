@@ -7,6 +7,7 @@
 
 %% SET DEFAULTS %%
 % \renewcommand{\defaultseparator}{$|$} % ex. set the default separator
+\renewcommand{\defaultvspacing}{4pt}
 
 % add bib resources
 \addbibresource{Papers.bib}
@@ -47,7 +48,34 @@
 
 \input{sections/work.tex}
 
-\input{sections/pubs.tex}
+\section{Publications \& Talks}
+
+\subsection{Papers}
+\begin{refsection}[Papers.bib]
+\nocite{*}
+\printbibliography[heading=none]
+\end{refsection}
+
+\subsection{Conference Abstracts}
+\nocite{*}
+\begin{refsection}[Abstracts.bib]
+\nocite{*}
+\printbibliography[heading=none]
+\end{refsection}
+
+\subsection{Talks}
+\nocite{*}
+\begin{refsection}[Talks.bib]
+\nocite{*}
+\printbibliography[heading=none]
+\end{refsection}
+
+\subsection{Blog Posts}
+\nocite{*}
+\begin{refsection}[Posts.bib]
+\nocite{*}
+\printbibliography[heading=none]
+\end{refsection}
 
 \input{sections/field.tex}
 

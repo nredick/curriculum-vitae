@@ -3,7 +3,7 @@
 
 % base class, font size
 % todo: make font size adjustable
-\LoadClass[11pt]{article}
+\LoadClass[12pt]{article}
 
 % font family
 \RequirePackage[T1]{fontenc}
@@ -20,11 +20,6 @@
 \RequirePackage{keyval} % for key-value arguments
 \RequirePackage{fancyhdr} % for footer (last updated)
 \RequirePackage{lastpage} % for page numbering
-
-% for layout=3 col sizes
-\RequirePackage{pgf}
-\newcommand{\leftcolsize}{0.18}
-\pgfmathsetmacro{\rightcolsize}{0.98 - \leftcolsize}
 
 % page geometry/margins
 % todo: make margins adjustable
@@ -79,33 +74,12 @@
 % publications import
 \RequirePackage[ % References
     backend=biber,
-    style=apa, % apa, nature, ieee, chicago-authordate, etc.
-    sorting=ydmnt, % Sort by year (descending), name, title
+    style=nature, % apa, nature, ieee, chicago-authordate, etc.
+    sorting=ydnt, % Sort by year (descending), name, title
     % labeldate=year,
     date=year,
 ]{biblatex}
 % \addbibresource{publications.bib}
-
-\DeclareSortingTemplate{ymdnt}{
-  \sort[direction=descending]{
-    \field{year}
-  }
-  \sort[direction=descending]{
-    \field{month}
-  }
-  \sort[direction=descending]{
-    \field{day}
-  }
-  \sort{
-    \field{author}
-  }
-  \sort{
-    \field{title}
-  }
-}
-
-\ExecuteBibliographyOptions{sorting=ymdnt}
-
 \RequirePackage{csquotes}
 
 % table settings
@@ -288,18 +262,21 @@
         \case{1}{
             % Case for 1-line layout
             \begin{tabularx}{\textwidth}{@{}lXr@{}}
-                \ifx\SH@gpa\empty
-                    \textbf{\SH@degree}~@~\SH@name
+                % Display the edu name in bold and location in italic
+                \textbf{\SH@name},~\textit{\SH@location}
+                % Optionally include the degree if provided
+                \ifx\SH@degree\empty
+                    % Do nothing if degree is empty
                 \else
-                    \textbf{\SH@degree}~@~\SH@name~(\SH@gpa)
+                    \separator\SH@degree
                 \fi
+                % Align GPA and date on the right
                 & \hfill
-                & \ifx\SH@location\empty
+                & \ifx\SH@gpa\empty
                     \SH@date
                 \else
-                    \textit{\SH@location}\,\separator\SH@date
+                    \SH@gpa\,\separator\SH@date
                 \fi
-                % ,~\textit{\SH@location}
             \end{tabularx}
 
             % Handle the description as a separate argument if provided
@@ -312,21 +289,29 @@
         \case{2}{
             % Case for 2-line layout (default)
             \begin{tabularx}{\textwidth}{@{}lXr@{}}
-                \textbf{\SH@degree}
-                \ifx\SH@gpa\empty
-                    % Do nothing if gpa is empty
+                % Display the edu name in bold
+                \textbf{\SH@name}
+                % Optionally include the degree if provided
+                % \ifcsname SH@degree\endcsname
+                %     \separator \SH@degree
+                % \else
+                %     % Do nothing if degree is empty
+                % \fi
+                \ifx\SH@degree\empty
+                    % Do nothing if degree is empty
                 \else
-                    ~(\SH@gpa)
+                    \separator \SH@degree
                 \fi
+                % Align the date on the right
                 & \hfill
-                & \SH@date \\
+                & \SH@date \\ % edu Name and Date
                 % Display the edu location in italic and GPA
-                \textit{\SH@name}
+                \textit{\SH@location}
                 & \hfill
-                & \ifx\SH@location\empty
-                    % Do nothing if location is empty
+                & \ifx\SH@gpa\empty
+                    % Do nothing if GPA is empty
                 \else
-                    \textit{\SH@location}
+                    \SH@gpa
                 \fi
             \end{tabularx}
 
@@ -334,19 +319,17 @@
             \ifx#2\empty
                 % Do nothing if #2 is empty
             \else
-                \vspace{2pt}
                 #2
             \fi
-
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
                 % Content for the first minipage
                 \SH@date
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
                 % Content for the second minipage
                 \ifx\SH@degree\empty
                     % if no degree provided, just use institution name
@@ -468,15 +451,15 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
                 % Content for the first minipage
                 \EX@date
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
                 % Content for the second minipage
                 \begin{tabularx}{\textwidth}{@{}lXr@{}}
-                    \textbf{\EX@title}\ @\ %\EX@company
+                    \textbf{\EX@title} @ %\EX@company
                     \ifx\EX@link\empty
                         \EX@company% Do nothing if link is empty
                     \else
@@ -646,12 +629,12 @@
             % \fi
         }
         \case{2}{
-            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
                 % Content for the first minipage
                 \textbf{\SK@name}
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
                 % Content for the second minipage
                 % Description as a separate argument
                 \ifx#2\empty
@@ -814,23 +797,23 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
                 % Content for the first minipage
                 \TEACH@date
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
                 % Content for the second minipage
                 \begin{tabularx}{\textwidth}{@{}lXr@{}}
                     \textbf{\TEACH@course}
                     & \hfill
                     & %\TEACH@institution
                     \ifx\TEACH@link\empty
-                        \textit{\TEACH@institution}% Do nothing if link is empty
+                        \TEACH@institution% Do nothing if link is empty
                     \else
                         % If link is provided, insert icon with href
                         % \TEACH@institution ~\href{\TEACH@link}{\linkicon}
-                        ~\href{\TEACH@link}{\textit{\TEACH@institution}}
+                        ~\href{\TEACH@link}{\TEACH@institution}
                     \fi
 
                     % & \textit{\TEACH@location}
@@ -930,7 +913,7 @@
         }
         \case{3}{
             % todo make it possible to set the minipage proportions
-            \begin{minipage}[t]{\leftcolsize\textwidth} % 10% width
+            \begin{minipage}[t]{0.20\textwidth} % 10% width
                 % Content for the first minipage
                 \FLD@date \\
                 \ifx\FLD@length\empty
@@ -940,12 +923,12 @@
                 \fi
             \end{minipage}%
             \hfill
-            \begin{minipage}[t]{\rightcolsize\textwidth} % 90% width
+            \begin{minipage}[t]{0.77\textwidth} % 90% width
                 % Content for the second minipage
                 \begin{tabularx}{\textwidth}{@{}lXr@{}}
                     \textbf{\FLD@activity}
                     & \hfill
-                    & \textit{\FLD@location}
+                    & \FLD@location
                     % \\
                     % \FLD@who
                     % \ifx\FLD@link\empty
